@@ -1,0 +1,97 @@
+cmake_minimum_required(VERSION 3.5)
+project(software_training_assignment)
+
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(example_interfaces REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(turtlesim REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(rcutils REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+
+#include the 'include' directory
+include_directories(include)
+
+#create resource which references the libraries in the binary bin
+#set(node_plugins "")
+
+set(node_dependencies
+  rclcpp
+  rclcpp_components
+  rcutils
+  std_msgs
+)
+
+
+
+
+
+
+#add spawn_turtle_nodelets as plugin
+#add_library(turtle_spawn SHARED
+# 	src/spawn_turtle_nodelet.cpp)
+# target_compile_definitions(turtle_spawn
+# 	PRIVATE "COMPOSITION_BUILDING_DLL")
+# ament_target_dependencies(turtle_spawn
+# 	"rclcpp"
+# 	"rclcpp_components"
+# 	"turtlesim"
+# 	"std_msgs")
+# #rclcpp_components_register_nodes(turtle_spawn "composition::spawn_turtle_nodelet")
+# #set(node_plugins "${node_plugins}composition::spawn_turtle_nodelet;$<TARGET_FILE:turtle_spawn\n>")
+# add_executable(
+#   turtle_spawn
+#   src/spawn_turtle_nodelet.cpp
+# )
+
+
+rclcpp_components_register_node(turtle_spawn
+  PLUGIN "composition::spawn_turtle_nodelet"
+  EXECUTABLE turtle_spawn
+)
+
+add_library(${PROJECT_NAME} SHARED
+  src/spawn_turtle_nodelet.cpp
+)
+ament_target_dependencies(${PROJECT_NAME} ${node_dependencies})
+
+install(TARGETS ${PROJECT_NAME} 
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # uncomment the line when a copyright and license is not present in all source files
+  #set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # uncomment the line when this package is not in a git repo
+  #set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_export_include_directories(include)
+ament_package()
