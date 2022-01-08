@@ -58,7 +58,6 @@ namespace composition
         {
             (void)teleport_response;
             RCLCPP_INFO(this->get_logger(), "Moving turtle reset completed.");
-            response->success = true;
             // rclcpp::shutdown(); // need this or else will keep on executing callback -
             //                     // only want to execute once!
         };

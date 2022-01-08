@@ -32,10 +32,11 @@ find_package(rosidl_default_generators REQUIRED)
 #include the 'include' directory
 include_directories(include)
 
-
 # custom services and messages and actions
 rosidl_generate_interfaces(${PROJECT_NAME}
 	"srv/ResetMovingTurtle.srv"
+	"msg/Software.msg"
+	"action/Software.action"
 	DEPENDENCIES std_msgs geometry_msgs builtin_interfaces
 	)
 ament_export_dependencies(rosidl_default_runtime)
@@ -43,21 +44,23 @@ ament_export_dependencies(rosidl_default_runtime)
 #create resource which references the libraries in the binary bin
 set(node_plugins "")
 
-#add plugins as SHARED library 
 
-# #add turtle_request_service_node as a plugin
-# add_library(turtle_request SHARED 
-# 	src/turtle_neutralize.cpp)
-# target_compile_definitions(turtle_request
-# 	PRIVATE "COMPOSITION_BUILDING_DLL")
-# ament_target_dependencies(turtle_request
-# 	"rclcpp"
-# 	"rclcpp_components"
-# 	"turtlesim"
-# 	"std_msgs")
-# rclcpp_components_register_nodes(turtle_request "composition::turtle_service_request_node")
-# # this way we can execute the component with - ros2 component standalone software_training composition::turtle_service_request_node
-# set(node_plugins "${node_plugins}compositon::turtle_service_request_node;$<TARGET_FILE:turtle_request>\n")
+#add clear_turtles as plugin
+add_library(clear_turtles SHARED
+	src/clear_turtles.cpp)
+target_compile_definitions(clear_turtles
+	PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(clear_turtles
+	"rclcpp"
+	"rclcpp_components"
+	"turtlesim"
+	"std_msgs"
+	"geometry_msgs")
+# rosidl_target_interfaces(clear_turtles ${PROJECT_NAME} "rosidl_typesupport_cpp") # need this for custom messages - idk why tho
+rclcpp_components_register_nodes(clear_turtles "composition::clear_turtles")
+set(node_plugins "${node_plugins}composition::clear_turtles;$<TARGET_FILE:clear_turtles\n>")
+
+
 
 
 #add spawn_turtle_nodelets as plugin
@@ -75,6 +78,37 @@ rclcpp_components_register_nodes(turtle_spawn "composition::spawn_turtle_nodelet
 set(node_plugins "${node_plugins}composition::spawn_turtle_nodelet;$<TARGET_FILE:turtle_spawn\n>")
 
 
+#add turtle publisher nodelet
+add_library(turtle_pub SHARED
+	src/turtle_publisher.cpp)
+target_compile_definitions(turtle_pub
+	PRIVATE "COMPOSITION_BUILDING_DLL"
+	)
+ament_target_dependencies(turtle_pub
+	"rclcpp"
+	"rclcpp_components"
+	"turtlesim"
+	"std_msgs")
+rosidl_target_interfaces(turtle_pub ${PROJECT_NAME} "rosidl_typesupport_cpp") # need this for custom messages - idk why tho
+rclcpp_components_register_nodes(turtle_pub "composition::turtle_publisher")
+set(node_plugins "${node_plugins}composition::turtle_publisher;$<TARGET_FILE:turtle_pub\n>")
+
+# #add moving turtle service 
+# add_library(turtle_service SHARED
+# 	src/reset_moving_turtle.cpp)
+# target_compile_definitions(turtle_service
+# 	PRIVATE "COMPOSITION_BUILDING_DLL"
+# 	)
+# ament_target_dependencies(turtle_service
+# 	"rclcpp"
+# 	"rclcpp_components"
+# 	"turtlesim"
+# 	"std_msgs")
+# rosidl_target_interfaces(turtle_service ${PROJECT_NAME} "rosidl_typesupport_cpp") # need for custom srv
+# rclcpp_components_register_nodes(turtle_service "composition::reset_moving_turtle")
+# set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:turtle_service\n")
+
+
 # add turtle circle  publisher nodelet
 add_library(turtle_circle SHARED
 	src/turtle_circle_publisher.cpp)
@@ -90,70 +124,6 @@ ament_target_dependencies(turtle_circle
 # rosidl_target_interfaces(turtle_circle ${PROJECT_NAME} "rosidl_typesupport_cpp") # need this for custom messages - idk why tho
 rclcpp_components_register_nodes(turtle_circle "composition::turtle_circle_publisher")
 set(node_plugins "${node_plugins}composition::turtle_circle_publisher;$<TARGET_FILE:turtle_circle\n>")
-
-#add clear_turtles as plugin
-add_library(clear_turtles SHARED
-	src/clear_turtles.cpp)
-target_compile_definitions(clear_turtles
-	PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(clear_turtles
-	"rclcpp"
-	"rclcpp_components"
-	"turtlesim"
-	"std_msgs"
-	"geometry_msgs")
-rclcpp_components_register_nodes(clear_turtles "composition::clear_turtles")
-set(node_plugins "${node_plugins}composition::clear_turtles;$<TARGET_FILE:clear_turtles\n>")
-
-#add clear_turtles as plugin
-add_library(reset_moving_turtle SHARED
-	src/reset_moving_turtle.cpp)
-target_compile_definitions(reset_moving_turtle
-	PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(reset_moving_turtle
-	"rclcpp"
-	"rclcpp_components"
-	"turtlesim"
-	"std_msgs"
-	"geometry_msgs")
-rclcpp_components_register_nodes(clear_turtles "composition::reset_moving_turtle")
-set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:reset_moving_turtle\n>")
-
-
-
- 
-
-
-
-#add moving turtle service 
-add_library(turtle_service SHARED
-	src/reset_moving_turtle.cpp)
-target_compile_definitions(turtle_service
-	PRIVATE "COMPOSITION_BUILDING_DLL"
-	)
-ament_target_dependencies(turtle_service
-	"rclcpp"
-	"rclcpp_components"
-	"turtlesim"
-	"std_msgs")
-rosidl_target_interfaces(turtle_service ${PROJECT_NAME} "rosidl_typesupport_cpp") # need for custom srv
-rclcpp_components_register_nodes(turtle_service "composition::reset_moving_turtle")
-set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:turtle_service\n")
-
-# #add cmd_vel publisher for moving_turtle 
-# add_library(cmd_vel_publisher SHARED
-# 	src/cmd_vel_moving_turt_publisher.cpp)
-# target_compile_definitions(cmd_vel_publisher 
-# 	PRIVATE "COMPOSITION_BUILDING_DLL"
-# 	)
-# ament_target_dependencies(cmd_vel_publisher 
-# 	"rclcpp"
-# 	"rclcpp_components"
-# 	"turtlesim"
-# 	"geometry_msgs"
-# 	"std_msgs")
-# rclcpp_components_register_nodes(cmd_vel_publisher "composition::cmd_vel_moving_turt_publisher")
-# set(node_plugins "${node_plugins}composition::cmd_vel_moving_turt_publisher;$<TARGET_FILE:cmd_vel_publisher\n">)
 
 #add action server for moving turtle
 #add_library(moving_turt_action SHARED
@@ -187,16 +157,14 @@ set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:
 # # with this we can exexute the component as a node - ros2 run software_training moving_action_server
 # rclcpp_components_register_node(turtle_action_server PLUGIN "composition::moving_turtle_action_server" EXECUTABLE moving_action_server)
 
-
-
 #tell where to put binaries
 install(TARGETS
 	# turtle_request
 	turtle_spawn
 	turtle_circle
 	clear_turtles
-	reset_moving_turtle
-	# turtle_pub
+	# turtle_service
+	turtle_pub
 	# turtle_service
 	#moving_turt_action
 	# turtle_action_server
