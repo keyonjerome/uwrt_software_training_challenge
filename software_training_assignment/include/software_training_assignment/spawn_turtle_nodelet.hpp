@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <rclcpp/rclcpp.hpp>
-
+#include <software_training_assignment/visibility.h>
 #include <turtlesim/srv/spawn.hpp>
 
 namespace composition {
@@ -16,12 +16,14 @@ namespace composition {
 class spawn_turtle_nodelet : public rclcpp::Node {
 
 public:
+  SOFTWARE_TRAINING_PUBLIC
   explicit spawn_turtle_nodelet(const rclcpp::NodeOptions &options);
 
 private:
   rclcpp::Client<turtlesim::srv::Spawn>::SharedPtr client;
   rclcpp::TimerBase::SharedPtr timer;
-
+  
+  SOFTWARE_TRAINING_LOCAL
   void spawn_turtle();
 
   static const unsigned int NUMBER_OF_TURTLES{2};

@@ -6,7 +6,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <software_training_assignment/msg/software.hpp>
-// #include <software_training/visibility.h>
+#include <software_training_assignment/visibility.h>
 #include <turtlesim/msg/pose.hpp>
 
 namespace composition {

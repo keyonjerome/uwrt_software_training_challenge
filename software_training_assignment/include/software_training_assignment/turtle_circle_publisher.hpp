@@ -10,14 +10,14 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <geometry_msgs/msg/twist.hpp>
-//#include <software_training/visibility.h>
+#include <software_training_assignment/visibility.h>
 
 namespace composition {
 
 class turtle_circle_publisher : public rclcpp::Node {
 
 public:
-//   SOFTWARE_TRAINING_PUBLIC
+  SOFTWARE_TRAINING_PUBLIC
   explicit turtle_circle_publisher(const rclcpp::NodeOptions &options);
 
 private:

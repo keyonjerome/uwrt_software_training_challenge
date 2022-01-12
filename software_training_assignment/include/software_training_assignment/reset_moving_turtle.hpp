@@ -8,7 +8,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-// #include <software_training/visibility.h>
+// #include <software_training_assignment/visibility.h>
+#include <software_training_assignment/visibility.h>
 #include <turtlesim/srv/teleport_absolute.hpp>
 
 namespace composition
@@ -17,6 +18,7 @@ namespace composition
     class reset_moving_turtle : public rclcpp::Node
     {
     public:
+        SOFTWARE_TRAINING_PUBLIC
         explicit reset_moving_turtle(const rclcpp::NodeOptions &options);
 
     private:
@@ -31,6 +33,7 @@ namespace composition
         float y_coord = 0.0F;
         float theta_coord = 0.0F;
 
+        SOFTWARE_TRAINING_LOCAL
         void service_callback(
             const std::shared_ptr<software_training_assignment::srv::ResetMovingTurtle::Request> request,
              std::shared_ptr<software_training_assignment::srv::ResetMovingTurtle::Response> response);

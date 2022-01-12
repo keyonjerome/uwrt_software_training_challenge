@@ -8,7 +8,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-// #include <software_training/visibility.h>
+#include <software_training_assignment/visibility.h>
 #include <turtlesim/srv/kill.hpp>
 
 namespace composition
@@ -17,6 +17,7 @@ namespace composition
     class clear_turtles : public rclcpp::Node
     {
     public:
+        SOFTWARE_TRAINING_PUBLIC        
         explicit clear_turtles(const rclcpp::NodeOptions &options);
 
     private:
@@ -27,7 +28,7 @@ namespace composition
         std::vector<std::string> turtle_names = {"turtle1", "moving_turtle",
                                                  "stationary_turtle"};
 
-        //   SOFTWARE_TRAINING_LOCAL
+        SOFTWARE_TRAINING_LOCAL
         void kill();
     };
 
