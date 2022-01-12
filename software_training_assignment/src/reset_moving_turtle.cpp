@@ -8,14 +8,14 @@ using namespace std::placeholders;
 namespace composition
 {
 
-    reset_moving_turtle::reset_moving_turtle(const rclcpp::NodeOptions &options) : Node("reset_moving_turtle")
+    reset_moving_turtle::reset_moving_turtle(const rclcpp::NodeOptions &options) : Node("reset_moving_turtle", options)
     {
         
         // I believe this only creates the service, but does not call it. 
 
         // create client
         // teleport_absolute may need to be TeleportAbsolute
-        client = this->create_client<turtlesim::srv::TeleportAbsolute>("/moving_turtle/teleport_absolute");
+        this->client = this->create_client<turtlesim::srv::TeleportAbsolute>("/moving_turtle/teleport_absolute");
 
         // // create callback
         // timer = this->create_wall_timer(2s, std::bind(&reset_moving_turtle::teleport,this));
@@ -28,7 +28,7 @@ namespace composition
                                                std::shared_ptr<software_training_assignment::srv::ResetMovingTurtle::Response> response)
     {
 
-        // (void)request; // request is not needed
+        (void)request; // request is not needed
 
         RCLCPP_INFO(this->get_logger(), "Starting reset_moving_turtle service...");
 
@@ -46,9 +46,9 @@ namespace composition
         }
 
         auto client_request = std::make_shared<turtlesim::srv::TeleportAbsolute::Request>();
-        client_request->x = x_coord;
-        client_request->y = y_coord;
-        client_request->theta = theta_coord;
+        client_request->x = reset_moving_turtle::x_coord;
+        client_request->y = reset_moving_turtle::y_coord;
+        client_request->theta = reset_moving_turtle::theta_coord;
 
         // create callback to handle response because no 'spin()' is available
 

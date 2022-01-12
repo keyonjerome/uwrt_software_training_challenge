@@ -1,6 +1,7 @@
 #ifndef RESET_MOVING_TURTLE_HPP_
 #define RESET_MOVING_TURTLE_HPP_
 
+#include <functional>
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -10,6 +11,7 @@
 
 // #include <software_training_assignment/visibility.h>
 #include <software_training_assignment/visibility.h>
+#include <software_training_assignment/srv/ResetMovingTurtle.hpp>
 #include <turtlesim/srv/teleport_absolute.hpp>
 
 namespace composition

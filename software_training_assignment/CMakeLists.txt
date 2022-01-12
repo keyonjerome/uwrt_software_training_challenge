@@ -93,20 +93,21 @@ rosidl_target_interfaces(turtle_pub ${PROJECT_NAME} "rosidl_typesupport_cpp") # 
 rclcpp_components_register_nodes(turtle_pub "composition::turtle_publisher")
 set(node_plugins "${node_plugins}composition::turtle_publisher;$<TARGET_FILE:turtle_pub\n>")
 
-# #add moving turtle service 
-# add_library(turtle_service SHARED
-# 	src/reset_moving_turtle.cpp)
-# target_compile_definitions(turtle_service
-# 	PRIVATE "COMPOSITION_BUILDING_DLL"
-# 	)
-# ament_target_dependencies(turtle_service
-# 	"rclcpp"
-# 	"rclcpp_components"
-# 	"turtlesim"
-# 	"std_msgs")
-# rosidl_target_interfaces(turtle_service ${PROJECT_NAME} "rosidl_typesupport_cpp") # need for custom srv
-# rclcpp_components_register_nodes(turtle_service "composition::reset_moving_turtle")
-# set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:turtle_service\n")
+#add moving turtle service 
+add_library(turtle_service SHARED
+	src/reset_moving_turtle.cpp)
+target_compile_definitions(turtle_service
+	PRIVATE "COMPOSITION_BUILDING_DLL"
+	)
+ament_target_dependencies(turtle_service
+	"rclcpp"
+	"rclcpp_components"
+	"turtlesim"
+	"turtlesim"
+	"std_msgs")
+rosidl_target_interfaces(turtle_service ${PROJECT_NAME} "rosidl_typesupport_cpp") # need for custom srv
+rclcpp_components_register_nodes(turtle_service "composition::reset_moving_turtle")
+set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:turtle_service\n")
 
 
 # add turtle circle  publisher nodelet
@@ -163,7 +164,7 @@ install(TARGETS
 	turtle_spawn
 	turtle_circle
 	clear_turtles
-	# turtle_service
+	turtle_service
 	turtle_pub
 	# turtle_service
 	#moving_turt_action
@@ -178,10 +179,10 @@ install(DIRECTORY launch
 	DESTINATION share/${PROJECT_NAME}
 	)
 
-#install configuration file (yaml files) for param server
-# install(DIRECTORY
-# 	config
-# 	DESTINATION share/${PROJECT_NAME}
-# 	)
+# install configuration file (yaml files) for param server
+install(DIRECTORY
+	config
+	DESTINATION share/${PROJECT_NAME}
+	)
 
 ament_package()
