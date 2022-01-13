@@ -179,10 +179,5 @@ install(DIRECTORY launch
 	DESTINATION share/${PROJECT_NAME}
 	)
 
-# install configuration file (yaml files) for param server
-install(DIRECTORY
-	config
-	DESTINATION share/${PROJECT_NAME}
-	)
 
 ament_package()
