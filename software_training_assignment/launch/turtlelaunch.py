@@ -12,11 +12,6 @@ def generate_launch_description():
             executable='component_container',
             composable_node_descriptions=[
                 ComposableNode(
-                    package='turtlesim',
-                    plugin='turtlesim_node',
-                    name="sim"
-                ),
-                ComposableNode(
                     package='software_training_assignment',
                     plugin='composition::clear_turtles',
                     name='clear_turtles',
@@ -31,8 +26,26 @@ def generate_launch_description():
                     plugin='composition::turtle_circle_publisher',
                     name='turtle_circle',
                     ),
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::turtle_publisher',
+                    name='turtle_publisher',
+                    ),
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::reset_moving_turtle',
+                    name='reset_moving_turtle',
+                    ),        
             ],
             output='screen',
     )
+    turtlesimlaunch = ComposableNodeContainer(
+            package='turtlesim',
+            namespace='turtlesim1',
+            executable='turtlesim_node',
+            name='turtle1',
+            composable_node_descriptions=[]
+    )
+    
 
-    return launch.LaunchDescription([container])
+    return launch.LaunchDescription([container,turtlesimlaunch])

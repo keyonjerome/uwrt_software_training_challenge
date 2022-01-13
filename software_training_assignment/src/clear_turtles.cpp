@@ -4,13 +4,13 @@ using namespace std::literals::chrono_literals;
 
 namespace composition {
 
-    clear_turtles::clear_turtles(const rclcpp::NodeOptions &options) : Node("clear_turtles")  {
+    clear_turtles::clear_turtles(const rclcpp::NodeOptions &options) : Node("clear_turtles",options)  {
         
         // create client
         client = this->create_client<turtlesim::srv::Kill>("/kill");
 
         // create callback
-        timer = this->create_wall_timer(2s, std::bind(&clear_turtles::kill,this));
+        // timer = this->create_wall_timer(2s, std::bind(&clear_turtles::kill,this));
 
     }
 
@@ -27,6 +27,7 @@ namespace composition {
             RCLCPP_INFO(this->get_logger(), "Service not available after waiting");
             return;
         }
+        RCLCPP_INFO(this->get_logger(), "TURTLES KILLED.");
 
         for (std::string &name : turtle_names) {
             auto request = std::make_shared<turtlesim::srv::Kill::Request>();

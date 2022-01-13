@@ -17,7 +17,8 @@ spawn_turtle_nodelet::spawn_turtle_nodelet(const rclcpp::NodeOptions &options)
             turtle_description.insert({turtle_names[i],turtle_bio[i]});
         }
         
-        timer = create_wall_timer(2s,std::bind(&spawn_turtle_nodelet::spawn_turtle,this));
+        spawn_turtle_nodelet::spawn_turtle();
+        // timer = create_wall_timer(2s,std::bind(&spawn_turtle_nodelet::spawn_turtle,this));
     };
 
 void spawn_turtle_nodelet::spawn_turtle() {
@@ -33,7 +34,7 @@ void spawn_turtle_nodelet::spawn_turtle() {
     }
 
     // only reaches this point if a "/spawn" service exists
-
+    RCLCPP_INFO(this->get_logger(), "SPAWN-TURTLE-SUCCESSFUL");
     for(const std::string &name : turtle_names) {
 
         // create request

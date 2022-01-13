@@ -18,7 +18,7 @@ namespace composition
         this->client = this->create_client<turtlesim::srv::TeleportAbsolute>("/moving_turtle/teleport_absolute");
 
         // // create callback
-        // timer = this->create_wall_timer(2s, std::bind(&reset_moving_turtle::teleport,this));
+        // timer = this->create_wall_timer(2s, std::bind(&reset_moving_turtle::reset_moving_turtle,this));
 
         // create service
         this->service = this->create_service<software_training_assignment::srv::ResetMovingTurtle>("/reset_moving_turtle", std::bind(&reset_moving_turtle::service_callback, this, _1, _2));
