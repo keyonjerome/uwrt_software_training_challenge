@@ -34,7 +34,7 @@ private:
   typedef struct point {
 
     typedef struct linear {
-      static constexpr float x = 5;
+      static constexpr float x = 2;
       static constexpr float y = 0;
       static constexpr float z = 0;
     } linear;
