@@ -1,7 +1,5 @@
-import launch 
-from launch_ros.actions import ComposableNodeContainer
-from launch_ros.descriptions import ComposableNode
-
+import launch
+import launch_ros.actions
 from launch_ros.actions import Node
 from launch_ros.descriptions import ComposableNode
 from launch_ros.actions import ComposableNodeContainer
@@ -16,9 +14,7 @@ from launch.substitutions import (EnvironmentVariable, FindExecutable,
                                 LaunchConfiguration, LocalSubstitution,
                                 PythonExpression)
 
-
 def generate_launch_description():
-    """Generate launch description with multiple components."""
 
     container = ComposableNodeContainer(
             name='node_container',
@@ -54,44 +50,43 @@ def generate_launch_description():
             ],
             output='screen',
     )
-    turtlesimlaunch = ComposableNodeContainer(
-            package='turtlesim',
-            namespace='turtlesim1',
-            executable='turtlesim_node',
-            name='turtle1',
-            composable_node_descriptions=[]
+    startcontainer = " run rclcpp_components node_container"
+    startComponent = " component load /node_container spawn_turtles composition::spawn_turtle_nodelet -p writer_name:='composition::spawn_turtle_nodelet'"
+    spawn_turtles = ExecuteProcess(
+        cmd=[[FindExecutable(name='ros2'), startcontainer],[
+            FindExecutable(name='ros2'), startComponent
+        ]],
+        shell=True
     )
 
-    # spawn_turtle = ExecuteProcess(
-    #         cmd=[[
-    #             FindExecutable(name='ros2'),
-    #             ' service call ',
-    #             turtlesim_ns,
-    #             '/spawn ',
-    #             'turtlesim/srv/Spawn ',
-    #             '"{x: 2, y: 2, theta: 0.2}"'
-    #         ]],
-    #         shell=True
-    #     )
+    # spawn_turtles = launch_ros.actions.Node(
+    #         package="software_training_assignment",
+    #         executable="turtle_spawn",
+    #         name="turtle_spawn",
+    #         output="screen"),
 
-    # task1 =  RegisterEventHandler(
-    #         OnProcessStart(
-    #             target_action=turtlesim_node,
-    #             on_start=[
-    #                 LogInfo(msg='Turtlesim started, spawning turtle'),
-    #                 spawn_turtle
-    #             ]
-    #         )
-    #     )
-    # task2 =  RegisterEventHandler(
-    #         OnProcessStart(
-    #             target_action=turtlesim_node,
-    #             on_start=[
-    #                 LogInfo(msg='Turtlesim started, spawning turtle'),
-    #                 spawn_turtle
-    #             ]
-    #         )
-    #     ),
-    
+    start_turtlesim = launch_ros.actions.Node(
+        package='turtlesim',
+        executable='turtlesim_node',
+        name='sim',
+        output="screen"
+        )
+    # turtlesim_node = Node(
+    #     package='turtlesim',
+    #     executable='turtlesim_node',
+    #     name='sim'
+    # )
 
-    return launch.LaunchDescription([container,turtlesimlaunch])
+    startEvent = RegisterEventHandler(
+        OnProcessStart(
+            target_action=start_turtlesim,
+            # on_start=[
+            #     LogInfo(msg='Turtlesim started, spawning turtle'),
+            #     spawn_turtles
+            # ]
+            # on_start = launch_ros.actions.load_composable_nodes.LoadComposableNodes(container)
+            on_start = container
+        )
+    )
+
+    return launch.LaunchDescription([startEvent, start_turtlesim])
