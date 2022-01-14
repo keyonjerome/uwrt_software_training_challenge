@@ -11,7 +11,7 @@ namespace composition {
 
         // create callback
         // timer = this->create_wall_timer(2s, std::bind(&clear_turtles::kill,this));
-
+        clear_turtles::kill();
     }
 
     // kill all turtles

@@ -28,6 +28,9 @@ namespace composition
         std::vector<std::string> turtle_names = {"turtle1", "moving_turtle",
                                                  "stationary_turtle"};
 
+        // one turtle
+        // std::vector<std::string> turtle_names = {"turtle1"};
+
         SOFTWARE_TRAINING_LOCAL
         void kill();
     };
