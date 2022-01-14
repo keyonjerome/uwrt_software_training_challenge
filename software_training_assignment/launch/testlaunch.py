@@ -14,6 +14,16 @@ from launch.substitutions import (EnvironmentVariable, FindExecutable,
                                 LaunchConfiguration, LocalSubstitution,
                                 PythonExpression)
 
+
+# RegisterEventHandler(
+#             OnProcessStart(
+#                 target_action=turtlesim_node,
+#                 on_start=[
+#                     LogInfo(msg='Turtlesim started, spawning turtle'),
+#                     spawn_turtle
+#                 ]
+#             )
+#         ),
 def generate_launch_description():
 
     container = ComposableNodeContainer(
@@ -50,20 +60,62 @@ def generate_launch_description():
             ],
             output='screen',
     )
-    startcontainer = " run rclcpp_components node_container"
-    startComponent = " component load /node_container spawn_turtles composition::spawn_turtle_nodelet -p writer_name:='composition::spawn_turtle_nodelet'"
-    spawn_turtles = ExecuteProcess(
-        cmd=[[FindExecutable(name='ros2'), startcontainer],[
-            FindExecutable(name='ros2'), startComponent
-        ]],
-        shell=True
+    
+    clear_turtle_container = ComposableNodeContainer(
+            name='clear_turtle_container',
+            namespace='ctc',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::clear_turtles',
+                    name='clear_turtles',
+                    )
+            ],
+            output='screen',
+    )
+    spawn_turtle_container = ComposableNodeContainer(
+            name='spawn_turtle_container',
+            namespace='stc',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::spawn_turtle_nodelet',
+                    name='turtle_spawn',
+                    ),
+            ],
+            output='screen',
+    )
+    turtle_publisher_container = ComposableNodeContainer(
+            name='turtle_publisher_container',
+            namespace='tpc',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::turtle_circle_publisher',
+                    name='turtle_circle',
+                    ),
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::turtle_publisher',
+                    name='turtle_publisher',
+                    ),
+            ],
+            output='screen',
     )
 
-    # spawn_turtles = launch_ros.actions.Node(
-    #         package="software_training_assignment",
-    #         executable="turtle_spawn",
-    #         name="turtle_spawn",
-    #         output="screen"),
+    on_spawn_turtles =  RegisterEventHandler(
+        OnProcessStart(
+            target_action=spawn_turtle_container,
+            on_start = turtle_publisher_container
+        )
+    )
+
 
     start_turtlesim = launch_ros.actions.Node(
         package='turtlesim',
@@ -71,22 +123,11 @@ def generate_launch_description():
         name='sim',
         output="screen"
         )
-    # turtlesim_node = Node(
-    #     package='turtlesim',
-    #     executable='turtlesim_node',
-    #     name='sim'
-    # )
-
     startEvent = RegisterEventHandler(
         OnProcessStart(
             target_action=start_turtlesim,
-            # on_start=[
-            #     LogInfo(msg='Turtlesim started, spawning turtle'),
-            #     spawn_turtles
-            # ]
-            # on_start = launch_ros.actions.load_composable_nodes.LoadComposableNodes(container)
-            on_start = container
+            on_start = spawn_turtle_container
         )
     )
 
-    return launch.LaunchDescription([startEvent, start_turtlesim])
+    return launch.LaunchDescription([startEvent, start_turtlesim,on_spawn_turtles])
