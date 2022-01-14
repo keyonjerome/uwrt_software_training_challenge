@@ -126,22 +126,22 @@ ament_target_dependencies(turtle_circle
 rclcpp_components_register_nodes(turtle_circle "composition::turtle_circle_publisher")
 set(node_plugins "${node_plugins}composition::turtle_circle_publisher;$<TARGET_FILE:turtle_circle\n>")
 
-#add action server for moving turtle
-#add_library(moving_turt_action SHARED
-#	src/moving_turtle_action_server.cpp)
-#target_compile_definitions(moving_turt_action 
-#	PRIVATE "COMPOSITION_BUILDING_DLL"
-#	)
-#ament_target_dependencies(moving_turt_action
-#	"rclcpp"
-#	"rclcpp_components"
-#	"turtlesim"
-#	"rclcpp_action"
-#	"geometry_msgs"
-#	"std_msgs")
-#rosidl_target_interfaces(moving_turt_action ${PROJECT_NAME} "rosidl_typesupport_cpp") # needed for custom action
-#rclcpp_components_register_nodes(moving_turt_action "composition::moving_turtle_action_server")
-#set(node_plugins "${node_plugins}composition::moving_turt_action_server;$<TARGET_FILE:moving_turt_action\n>")
+# add action server for moving turtle
+add_library(moving_turt_action SHARED
+	src/moving_turtle_action_server.cpp)
+target_compile_definitions(moving_turt_action 
+	PRIVATE "COMPOSITION_BUILDING_DLL"
+	)
+ament_target_dependencies(moving_turt_action
+	"rclcpp"
+	"rclcpp_components"
+	"turtlesim"
+	"rclcpp_action"
+	"geometry_msgs"
+	"std_msgs")
+rosidl_target_interfaces(moving_turt_action ${PROJECT_NAME} "rosidl_typesupport_cpp") # needed for custom action
+rclcpp_components_register_nodes(moving_turt_action "composition::moving_turtle_action_server")
+set(node_plugins "${node_plugins}composition::moving_turt_action_server;$<TARGET_FILE:moving_turt_action\n>")
 
 # add_library(turtle_action_server SHARED
 # 	src/moving_turtle_action_server.cpp)
@@ -167,7 +167,7 @@ install(TARGETS
 	turtle_service
 	turtle_pub
 	# turtle_service
-	#moving_turt_action
+	moving_turt_action
 	# turtle_action_server
 	# cmd_vel_publisher
 	ARCHIVE DESTINATION lib
