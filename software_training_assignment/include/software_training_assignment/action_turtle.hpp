@@ -1,5 +1,5 @@
-#ifndef MOVING_TURTLE_ACTION_SERVER_HPP_
-#define MOVING_TURTLE_ACTION_SERVER_HPP_
+#ifndef ACTION_TURTLE_HPP_
+#define ACTION_TURTLE_HPP_
 
 #include <chrono>
 #include <functional>
@@ -17,11 +17,11 @@
 
 namespace composition{
 
-class moving_turtle_action_server : public rclcpp::Node {
+class action_turtle : public rclcpp::Node {
 
 public:
   SOFTWARE_TRAINING_PUBLIC
-  explicit moving_turtle_action_server(const rclcpp::NodeOptions &options);
+  explicit action_turtle(const rclcpp::NodeOptions &options);
 
   // nice to have to prevent lengthy repitive code
   using GoalHandleActionServer =
@@ -49,11 +49,12 @@ private:
   rclcpp_action::CancelResponse
   handle_cancel(const std::shared_ptr<GoalHandleActionServer> goal_handle);
 
-  // handle accepetd callback function
+  // handle accepted callback function
   SOFTWARE_TRAINING_LOCAL
   void
   handle_accepted(const std::shared_ptr<GoalHandleActionServer> goal_handle);
 
+  SOFTWARE_TRAINING_LOCAL
   // executioner callback function
   void execute(const std::shared_ptr<GoalHandleActionServer> goal_handle);
 
@@ -69,4 +70,4 @@ private:
 
 }
 
-#endif // MOVING_TURTLE_ACTION_SERVER_HPP_
+#endif // ACTION_TURTLE_HPP_

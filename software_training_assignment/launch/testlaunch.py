@@ -109,10 +109,26 @@ def generate_launch_description():
             output='screen',
     )
 
+    moving_turtle_action_container = ComposableNodeContainer(
+            name='moving_turt_action_container',
+            namespace='mtac',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='software_training_assignment',
+                    plugin='composition::action_turtle',
+                    name='turtle_action_server',
+                    ),
+
+            ],
+            output='screen',
+    )
+
     on_spawn_turtles =  RegisterEventHandler(
         OnProcessStart(
             target_action=spawn_turtle_container,
-            on_start = turtle_publisher_container
+            on_start = [turtle_publisher_container,moving_turtle_action_container]
         )
     )
 
