@@ -49,7 +49,7 @@ set(node_plugins "")
 add_library(clear_turtles SHARED
 	src/clear_turtles.cpp)
 target_compile_definitions(clear_turtles
-	PRIVATE "COMPOSITION_BUILDING_DLL")
+	PRIVATE "SOFTWARE_TRAINING_DLL")
 ament_target_dependencies(clear_turtles
 	"rclcpp"
 	"rclcpp_components"
@@ -67,7 +67,7 @@ set(node_plugins "${node_plugins}composition::clear_turtles;$<TARGET_FILE:clear_
 add_library(turtle_spawn SHARED
 	src/spawn_turtle_nodelet.cpp)
 target_compile_definitions(turtle_spawn
-	PRIVATE "COMPOSITION_BUILDING_DLL")
+	PRIVATE "SOFTWARE_TRAINING_DLL")
 ament_target_dependencies(turtle_spawn
 	"rclcpp"
 	"rclcpp_components"
@@ -82,7 +82,7 @@ set(node_plugins "${node_plugins}composition::spawn_turtle_nodelet;$<TARGET_FILE
 add_library(turtle_pub SHARED
 	src/turtle_publisher.cpp)
 target_compile_definitions(turtle_pub
-	PRIVATE "COMPOSITION_BUILDING_DLL"
+	PRIVATE "SOFTWARE_TRAINING_DLL"
 	)
 ament_target_dependencies(turtle_pub
 	"rclcpp"
@@ -97,7 +97,7 @@ set(node_plugins "${node_plugins}composition::turtle_publisher;$<TARGET_FILE:tur
 add_library(turtle_service SHARED
 	src/reset_moving_turtle.cpp)
 target_compile_definitions(turtle_service
-	PRIVATE "COMPOSITION_BUILDING_DLL"
+	PRIVATE "SOFTWARE_TRAINING_DLL"
 	)
 ament_target_dependencies(turtle_service
 	"rclcpp"
@@ -114,7 +114,7 @@ set(node_plugins "${node_plugins}composition::reset_moving_turtle;$<TARGET_FILE:
 add_library(turtle_circle SHARED
 	src/turtle_circle_publisher.cpp)
 target_compile_definitions(turtle_circle
-	PRIVATE "COMPOSITION_BUILDING_DLL"
+	PRIVATE "SOFTWARE_TRAINING_DLL"
 	)
 ament_target_dependencies(turtle_circle
 	"rclcpp"
