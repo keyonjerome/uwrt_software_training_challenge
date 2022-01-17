@@ -6,7 +6,8 @@
 #include <software_training_assignment/action_turtle.hpp>
 
 using namespace std::placeholders;
-using GoalHandleActionServer = rclcpp_action::ServerGoalHandle<software_training_assignment::action::Software::Goal>;
+using namespace std::chrono_literals;
+
 namespace composition
 {
     // on node creation, create publisher, action server, turtle pose subscriber...
@@ -63,7 +64,7 @@ namespace composition
 
     void action_turtle::handle_accepted(const std::shared_ptr<GoalHandleActionServer> goal_handle)
     {
-        using namespace std::placeholders;
+        // using namespace std::placeholders;
         // this needs to return quickly to avoid blocking the executor, so spin up a new thread
         std::thread{std::bind(&action_turtle::execute, this, _1), goal_handle}.detach();
     }
@@ -124,56 +125,72 @@ namespace composition
 
             // check if goal has been canceled
             if (goal_handle->is_canceling()) {
-            RCLCPP_INFO(this->get_logger(), "Goal Canceled");
+                RCLCPP_INFO(this->get_logger(), "Goal Canceled");
 
-            // get the time it has taken thus far and update result
-            rclcpp::Time curr_time = this->now();
-            rclcpp::Duration time = curr_time - start_time;
-            long int duration{time.nanoseconds()};
-            result->duration = duration;
+                // get the time it has taken thus far and update result
+                rclcpp::Time curr_time = this->now();
+                rclcpp::Duration time = curr_time - start_time;
+                long int duration{time.nanoseconds()};
+                result->duration = duration;
 
-            goal_handle->canceled(std::move(result));
-            return;
-         }
+                goal_handle->canceled(std::move(result));
+                return;
+            }
         
 
-      
-        auto message = std::make_unique<geometry_msgs::msg::Twist>();
+        
+            auto message = std::make_unique<geometry_msgs::msg::Twist>();
 
-        message->linear.x = (lin_x < goal->linear_pos.x) ? lin_x++ : lin_x;
-        message->linear.y = (lin_y < goal->linear_pos.y) ? lin_y++ : lin_y;
-        message->linear.z = (lin_z < goal->linear_pos.z) ? lin_z++ : lin_z;
+            message->linear.x = (lin_x < goal->linear_pos.x) ? lin_x++ : lin_x;
+            message->linear.y = (lin_y < goal->linear_pos.y) ? lin_y++ : lin_y;
+            message->linear.z = (lin_z < goal->linear_pos.z) ? lin_z++ : lin_z;
 
-        message->angular.x =   (ang_x < goal->angular_pos.x) ? ang_x++ : ang_x;
-        message->angular.y =   (ang_y < goal->angular_pos.y) ? ang_y++ : ang_y;
-        message->angular.z = (ang_z < goal->angular_pos.z) ? ang_z++ : ang_z;
+            message->angular.x =   (ang_x < goal->angular_pos.x) ? ang_x++ : ang_x;
+            message->angular.y =   (ang_y < goal->angular_pos.y) ? ang_y++ : ang_y;
+            message->angular.z = (ang_z < goal->angular_pos.z) ? ang_z++ : ang_z;
 
-        this->publisher->publish(std::move(message));
+            this->publisher->publish(std::move(message));
 
-        // now compute feedback
-        curr_x = this->action_turtle::x - lin_x;
-        curr_y = this->action_turtle::y - lin_y;
+            // now compute feedback
+            curr_x = this->action_turtle::x - lin_x;
+            curr_y = this->action_turtle::y - lin_y;
 
-        // Orson's theta math
-        float theta{0};
+            // Orson's theta math
+            float theta{0};
 
-        // scope this stuff cause we dont need it afterwards
-        {
+            // scope this stuff cause we dont need it afterwards
+            {
 
-            float x1{lin_x}, x2{lin_y}, x3{lin_z};
+                float x1{lin_x}, x2{lin_y}, x3{lin_z};
 
-            float magnitude{static_cast<float>(sqrt((x1 * x1) + (x2 * x2) + (x3 * x3)))};
+                float magnitude{static_cast<float>(sqrt((x1 * x1) + (x2 * x2) + (x3 * x3)))};
 
-            theta = acos(x3 / magnitude);
+                theta = acos(x3 / magnitude);
+            }
+
+            curr_theta = this->action_turtle::theta - theta;
+
+            // publish feedback
+            goal_handle->publish_feedback(std::move(feedback));
+
+            loop_rate.sleep(); // control the rate at which the loop, loops through
+
         }
 
-        curr_theta = this->action_turtle::theta - theta;
+         // if goal is done
+        if (rclcpp::ok()) {
 
-        // publish feedback
-        goal_handle->publish_feedback(std::move(feedback));
+            rclcpp::Time end = this->now();               // get end time
+            rclcpp::Duration duration = end - start_time; // compute time taken
+            long int res_time{duration.nanoseconds()};    // should be uint64_t
 
-        loop_rate.sleep(); // control the rate at which the loop, loops through
+            // fill in result
+            result->duration = res_time;
 
+            // set the result
+            goal_handle->succeed(
+                std::move(result)); // move ownership so ptr is still usable
+            RCLCPP_INFO(this->get_logger(), "Finish Executing Goal");
         }
 
 

@@ -161,7 +161,7 @@ set(node_plugins "${node_plugins}composition::turtle_circle_publisher;$<TARGET_F
 add_library(turtle_action_server SHARED
 	src/action_turtle.cpp)
 target_compile_definitions(turtle_action_server
-	PRIVATE "COMPOSITION_BUILDING_DLL")
+	PRIVATE "SOFTWARE_TRAINING_DLL")
 ament_target_dependencies(turtle_action_server
        "rclcpp"
        "rclcpp_components" 

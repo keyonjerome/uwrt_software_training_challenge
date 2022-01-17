@@ -118,7 +118,7 @@ def generate_launch_description():
                 ComposableNode(
                     package='software_training_assignment',
                     plugin='composition::action_turtle',
-                    name='turtle_action_server',
+                    name='action_turtle',
                     ),
 
             ],
