@@ -59,11 +59,11 @@ private:
   void execute(const std::shared_ptr<GoalHandleActionServer> goal_handle);
 
   // for subscriber
-  static float x;
-  static float y;
-  static float theta;
-  static float linear_velocity;
-  static float angular_velocity;
+  float x;
+  float y;
+  float theta;
+  float linear_velocity;
+  float angular_velocity;
 
   static constexpr unsigned int QUEUE{10};
 };
