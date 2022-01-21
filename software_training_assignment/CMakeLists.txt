@@ -174,6 +174,24 @@ rosidl_target_interfaces(turtle_action_server ${PROJECT_NAME} "rosidl_typesuppor
 rclcpp_components_register_node(turtle_action_server PLUGIN "composition::action_turtle" EXECUTABLE turtle_action)
 set(node_plugins "${node_plugins}composition::action_turtle;$<TARGET_FILE:turtle_action_server\n>")
 
+
+# add_library(turtle_action_client SHARED
+# 	src/action_client.cpp)
+# target_compile_definitions(turtle_action_client
+# 	PRIVATE "SOFTWARE_TRAINING_DLL")
+# ament_target_dependencies(turtle_action_client
+#        "rclcpp"
+#        "rclcpp_components" 
+#        "turtlesim"
+#        "rclcpp_action"
+#        "std_msgs"
+#        "geometry_msgs")
+# rosidl_target_interfaces(turtle_action_client ${PROJECT_NAME} "rosidl_typesupport_cpp") # needed for custom action
+# # with this we can execute the component as a node - ros2 run software_training turtle_action
+# rclcpp_components_register_node(turtle_action_client PLUGIN "composition::action_turtle" EXECUTABLE turtle_client)
+# set(node_plugins "${node_plugins}composition::action_client;$<TARGET_FILE:turtle_action_client\n>")
+
+
 #tell where to put binaries
 install(TARGETS
 	# turtle_request
@@ -185,6 +203,7 @@ install(TARGETS
 	# turtle_service
 	# moving_turt_action
 	turtle_action_server
+	# turtle_action_client
 	# cmd_vel_publisher
 	ARCHIVE DESTINATION lib
 	LIBRARY DESTINATION lib 
