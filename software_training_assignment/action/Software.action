@@ -1,6 +1,6 @@
 # Goal Request /moving_turtle/cmd_vel
-geometry_msgs/Vector3 linear_pos 
-geometry_msgs/Vector3 angular_pos
+float32 x_pos 
+float32 y_pos
 
 # Result - time
 ---
@@ -9,10 +9,7 @@ uint64 duration
 ---
 # feedback distance
 # float32 dist
-# Feedback /moving_turtle/pose
-float32 x_pos 
-float32 y_pos
-float32 theta_pos
+float32 dist
 
 
 

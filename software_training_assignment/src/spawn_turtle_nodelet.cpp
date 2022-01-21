@@ -54,7 +54,7 @@ void spawn_turtle_nodelet::spawn_turtle() {
         RCLCPP_INFO(this->get_logger(), "Turtle Created: %s",
                     response.get()->name.c_str());
             // we only want this service to run once; therefore shutdown
-            rclcpp::shutdown();
+            // rclcpp::shutdown();
         };
 
         // send request
