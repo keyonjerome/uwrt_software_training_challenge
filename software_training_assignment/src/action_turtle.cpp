@@ -83,13 +83,15 @@ namespace composition
         
 
         rclcpp::Time start_time = this->now(); // get the current time
+        
 
+        const float time_constant = 5.0f;
         // get goal data for later
         const auto goal = goal_handle->get_goal();
 
-        // create feedback
-        std::unique_ptr<software_training_assignment::action::Software::Feedback> feedback =
-            std::make_unique<software_training_assignment::action::Software::Feedback>();
+        // // create feedback
+        // std::unique_ptr<software_training_assignment::action::Software::Feedback> feedback =
+        //     std::make_unique<software_training_assignment::action::Software::Feedback>();
 
 
         // create result
@@ -113,65 +115,114 @@ namespace composition
         float TOL = 0.01;
         float speed = 0.5;
 
-        // There is a more elegant way of writing this. I am not doing it. Free me from this training.
-        // RCLCPP_INFO(this->get_logger(),"LOOP COND1: %f, LOOP COND2:%f",!(goal_x-TOL <= curr_x && curr_x >= goal_x + TOL),!(goal_y-TOL <= curr_y && curr_y >= goal_y + TOL));
+        // Have you heard of our lord and saviour, v = d/t ?
+        float vel_x = (goal_x - curr_x)/time_constant;
+        float vel_y = (goal_y - curr_y)/time_constant;
+        // auto message = std::make_unique<geometry_msgs::msg::Twist>();
+        RCLCPP_INFO(this->get_logger(),"VEL_X:%f, VEL_Y:%f", vel_x, vel_y);
+        // message->linear.x = vel_x;
+        // message->linear.y = vel_y;
+        // message->linear.z = 0.0f;
+        // message->angular.x = 0.0f;
+        // message->angular.y = 0.0f;
+        // message->angular.z = 0.0f;
+
         RCLCPP_INFO(this->get_logger(),"CURR_X:%f, CURR_Y:%f || GOAL_X: %f, GOAL_Y: %f",curr_x,curr_y,goal_x,goal_y);
         while(rclcpp::ok() && ( 
             !(curr_x >= goal_x - TOL && curr_x <= goal_x + TOL) || !(curr_y >= goal_y - TOL && curr_y <= goal_y + TOL))  
-        ) { 
-
-
-            // check if goal has been canceled
-            if (goal_handle->is_canceling()) {
-                RCLCPP_INFO(this->get_logger(), "Goal Canceled");
-
-                // get the time it has taken thus far and update result
-                rclcpp::Time curr_time = this->now();
-                rclcpp::Duration time = curr_time - start_time;
-                long int duration{time.nanoseconds()};
-                result->duration = duration;
-
-                goal_handle->canceled(std::move(result));
-                return;
-            }
-
-            if(curr_x >= goal_x - TOL && curr_x <= goal_x + TOL) cmd_vel_x = 0;
-            else {
-                if(goal_x < curr_x) cmd_vel_x = -speed;
-                else cmd_vel_x = speed;
-            }
-
-            if(curr_y >= goal_y - TOL && curr_y <= goal_y + TOL) cmd_vel_y = 0;
-            else {
-                if(goal_y < curr_y) cmd_vel_y = -speed;
-                else cmd_vel_y = speed;
-            }
-
-            RCLCPP_INFO(this->get_logger(),"CMD_VEL_X:%f, CMD_VEL_Y:%f",cmd_vel_x,cmd_vel_y);
-
-            feedback->dist = sqrt(pow(goal->x_pos - curr_x,2))+ pow(goal->y_pos - curr_y,2);
-            // publish feedback
-            // goal_handle->publish_feedback(std::move(feedback));
-
-            // message->linear.x = cmd_vel_x;
-            // message->linear.y = cmd_vel_y;
+        ) {
             auto message = std::make_unique<geometry_msgs::msg::Twist>();
-            message->linear.x = cmd_vel_x;
-            message->linear.y = cmd_vel_y;
+            message->linear.x = vel_x;
+            message->linear.y = vel_y;
+            message->linear.z = 0.0f;
+            message->angular.x = 0.0f;
+            message->angular.y = 0.0f;
+            message->angular.z = 0.0f;
+
+            // create feedback
+            std::unique_ptr<software_training_assignment::action::Software::Feedback> feedback =
+            std::make_unique<software_training_assignment::action::Software::Feedback>();
+
+            feedback->dist = sqrt(pow(goal->x_pos - curr_x,2)+ pow(goal->y_pos - curr_y,2));
+
+            this->publisher->publish(std::move(message));
+
+            goal_handle->publish_feedback(std::move(feedback));
+
+            RCLCPP_INFO(this->get_logger(),"CURR_X:%f, CURR_Y:%f || GOAL_X: %f, GOAL_Y: %f",curr_x,curr_y,goal_x,goal_y);
+            RCLCPP_INFO(this->get_logger(),"CMD_VEL_X:%f, CMD_VEL_Y:%f",vel_x,vel_y);
+
+            loop_rate.sleep();
+        }
+        // There is a more elegant way of writing this. I am not doing it. Free me from this training.
+        // RCLCPP_INFO(this->get_logger(),"LOOP COND1: %f, LOOP COND2:%f",!(goal_x-TOL <= curr_x && curr_x >= goal_x + TOL),!(goal_y-TOL <= curr_y && curr_y >= goal_y + TOL));
+        // RCLCPP_INFO(this->get_logger(),"CURR_X:%f, CURR_Y:%f || GOAL_X: %f, GOAL_Y: %f",curr_x,curr_y,goal_x,goal_y);
+        // while(rclcpp::ok() && ( 
+        //     !(curr_x >= goal_x - TOL && curr_x <= goal_x + TOL) || !(curr_y >= goal_y - TOL && curr_y <= goal_y + TOL))  
+        // ) { 
+
+
+        //     // check if goal has been canceled
+        //     if (goal_handle->is_canceling()) {
+        //         RCLCPP_INFO(this->get_logger(), "Goal Canceled");
+
+        //         // get the time it has taken thus far and update result
+        //         rclcpp::Time curr_time = this->now();
+        //         rclcpp::Duration time = curr_time - start_time;
+        //         long int duration{time.nanoseconds()};
+        //         result->duration = duration;
+
+        //         goal_handle->canceled(std::move(result));
+        //         return;
+        //     }
+
+        //     if(curr_x >= goal_x - TOL && curr_x <= goal_x + TOL) cmd_vel_x = 0;
+        //     else {
+        //         if(goal_x < curr_x) cmd_vel_x = -speed;
+        //         else cmd_vel_x = speed;
+        //     }
+
+        //     if(curr_y >= goal_y - TOL && curr_y <= goal_y + TOL) cmd_vel_y = 0;
+        //     else {
+        //         if(goal_y < curr_y) cmd_vel_y = -speed;
+        //         else cmd_vel_y = speed;
+        //     }
+
+        //     RCLCPP_INFO(this->get_logger(),"CMD_VEL_X:%f, CMD_VEL_Y:%f",cmd_vel_x,cmd_vel_y);
+
+        //     feedback->dist = sqrt(pow(goal->x_pos - curr_x,2))+ pow(goal->y_pos - curr_y,2);
+        //     // publish feedback
+        //     goal_handle->publish_feedback(std::move(feedback));
+
+        //     // message->linear.x = cmd_vel_x;
+        //     // message->linear.y = cmd_vel_y;
+        //     auto message = std::make_unique<geometry_msgs::msg::Twist>();
+        //     message->linear.x = cmd_vel_x;
+        //     message->linear.y = cmd_vel_y;
+        //     message->linear.z = 0.0f;
+        //     message->angular.x = 0.0f;
+        //     message->angular.y = 0.0f;
+        //     message->angular.z = 0.0f;
+        //     this->publisher->publish(std::move(message));
+
+
+
+
+        //     loop_rate.sleep();
+        // }
+
+         // if goal is done
+        if (rclcpp::ok()) {
+
+            auto message = std::make_unique<geometry_msgs::msg::Twist>();
+            message->linear.x = 0.0f;
+            message->linear.y = 0.0f;
             message->linear.z = 0.0f;
             message->angular.x = 0.0f;
             message->angular.y = 0.0f;
             message->angular.z = 0.0f;
             this->publisher->publish(std::move(message));
 
-
-
-
-            loop_rate.sleep();
-        }
-
-         // if goal is done
-        if (rclcpp::ok()) {
 
             rclcpp::Time end = this->now();               // get end time
             rclcpp::Duration duration = end - start_time; // compute time taken
