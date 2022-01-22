@@ -40,8 +40,7 @@ namespace composition {
                 -> void {
                 (void)response;
                 RCLCPP_INFO(this->get_logger(), "Turtle  Killed");
-                // rclcpp::shutdown(); // need this or else will keep on executing callback -
-                //                     // only want to execute once!
+                rclcpp::shutdown(); // kill this node
             };
 
             auto result = client->async_send_request(request, callback);
