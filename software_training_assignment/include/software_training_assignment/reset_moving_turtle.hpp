@@ -34,7 +34,7 @@ namespace composition
 
 
         std::string turtle_to_move = "moving_turtle";
-        float x_coord = 25.0f;
+        float x_coord = 24.0f;
         float y_coord = 10.0f;
         float theta_coord = 0.0F;
 

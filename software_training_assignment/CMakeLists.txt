@@ -125,37 +125,6 @@ ament_target_dependencies(turtle_circle
 rclcpp_components_register_node(turtle_circle PLUGIN "composition::turtle_circle_publisher" EXECUTABLE turtle_circle_pub)
 # set(node_plugins "${node_plugins}composition::turtle_circle_publisher;$<TARGET_FILE:turtle_circle\n>")
 
-# # add action server for moving turtle
-# add_library(moving_turt_action SHARED
-# 	src/moving_turtle_action_server.cpp)
-# target_compile_definitions(moving_turt_action 
-# 	PRIVATE "COMPOSITION_BUILDING_DLL"
-# 	)
-# ament_target_dependencies(moving_turt_action
-# 	"rclcpp"
-# 	"rclcpp_components"
-# 	"turtlesim"
-# 	"rclcpp_action"
-# 	"geometry_msgs"
-# 	"std_msgs")
-# rosidl_target_interfaces(moving_turt_action ${PROJECT_NAME} "rosidl_typesupport_cpp") # needed for custom action
-# rclcpp_components_register_nodes(moving_turt_action "composition::moving_turtle_action_server")
-# set(node_plugins "${node_plugins}composition::moving_turt_action_server;$<TARGET_FILE:moving_turt_action\n>")
-
-# add_library(turtle_action_server SHARED
-# 	src/moving_turtle_action_server.cpp)
-# target_compile_definitions(turtle_action_server
-# 	PRIVATE "SOFTWARE_TRAINING_DLL")
-# ament_target_dependencies(turtle_action_server
-#        "rclcpp"
-#        "rclcpp_components" 
-#        "turtlesim"
-#        "rclcpp_action"
-#        "std_msgs"
-#        "geometry_msgs")
-# rosidl_target_interfaces(turtle_action_server ${PROJECT_NAME} "rosidl_typesupport_cpp") # needed for custom action
-# # with this we can exexute the component as a node - ros2 run software_training moving_action_server
-# rclcpp_components_register_node(turtle_action_server PLUGIN "composition::moving_turtle_action_server" EXECUTABLE moving_action_server)
 
 add_library(turtle_action_server SHARED
 	src/action_turtle.cpp)
@@ -199,11 +168,8 @@ install(TARGETS
 	clear_turtles
 	turtle_service
 	turtle_pub
-	# turtle_service
-	# moving_turt_action
 	turtle_action_server
 	# turtle_action_client
-	# cmd_vel_publisher
 	ARCHIVE DESTINATION lib
 	LIBRARY DESTINATION lib 
 	RUNTIME DESTINATION bin)
