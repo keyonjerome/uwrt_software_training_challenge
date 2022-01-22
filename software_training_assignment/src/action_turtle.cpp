@@ -79,13 +79,13 @@ namespace composition
     {
 
         RCLCPP_INFO(this->get_logger(), "Executing goal");
-        rclcpp::Rate loop_rate(5);
+        rclcpp::Rate loop_rate(1);
         
 
         rclcpp::Time start_time = this->now(); // get the current time
         
 
-        const float time_constant = 5.0f;
+        const float time_constant = 1.250f;
         // get goal data for later
         const auto goal = goal_handle->get_goal();
 
@@ -112,7 +112,7 @@ namespace composition
         
         float cmd_vel_x = 0;
         float cmd_vel_y = 0;
-        float TOL = 0.01;
+        float TOL = 0.25;
         float speed = 0.5;
 
         // Have you heard of our lord and saviour, v = d/t ?
@@ -152,7 +152,7 @@ namespace composition
             RCLCPP_INFO(this->get_logger(),"CURR_X:%f, CURR_Y:%f || GOAL_X: %f, GOAL_Y: %f",curr_x,curr_y,goal_x,goal_y);
             RCLCPP_INFO(this->get_logger(),"CMD_VEL_X:%f, CMD_VEL_Y:%f",vel_x,vel_y);
 
-            loop_rate.sleep();
+            // loop_rate.sleep();
         }
         // There is a more elegant way of writing this. I am not doing it. Free me from this training.
         // RCLCPP_INFO(this->get_logger(),"LOOP COND1: %f, LOOP COND2:%f",!(goal_x-TOL <= curr_x && curr_x >= goal_x + TOL),!(goal_y-TOL <= curr_y && curr_y >= goal_y + TOL));

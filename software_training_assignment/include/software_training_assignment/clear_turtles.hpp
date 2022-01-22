@@ -25,7 +25,7 @@ namespace composition
         rclcpp::TimerBase::SharedPtr timer;
 
         // all the turtles
-        std::vector<std::string> turtle_names = {"turtle1", "moving_turtle",
+        std::vector<std::string> turtle_names = {"moving_turtle",
                                                  "stationary_turtle"};
 
         // one turtle

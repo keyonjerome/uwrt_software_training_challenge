@@ -34,9 +34,9 @@ private:
     float rad;
   } turtle_info;
 
-  std::vector<std::string> turtle_names{"stationary_turtle", "moving_turtle","turtle1"};
+  std::vector<std::string> turtle_names{"stationary_turtle", "moving_turtle"};
   std::vector<turtle_info> turtle_bio{{.x_pos = 5, .y_pos = 5, .rad = 0},
-                                      {.x_pos = 25, .y_pos = 10, .rad = 0},{.x_pos = 7.5, .y_pos = 7.5, .rad = 0}};
+                                      {.x_pos = 25, .y_pos = 10, .rad = 0}};
 
   // map of turtle name to turtle information
   std::map<std::string, turtle_info> turtle_description;
